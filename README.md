@@ -1,8 +1,8 @@
 # A Docker based Home Assistant interface for LeChacal.com's RPICT's Energy Monitoring Sensors
 
-**Docker Hub:** [`gtricot/ha-lechacal-mqtt:latest`](https://hub.docker.com/r/gtricot/ha-lechacal-mqtt/)
+**Docker Hub:** [`gtricot/lechacal-mqtt:latest`](https://hub.docker.com/r/gtricot/lechacal-mqtt/)
 
-![License](https://img.shields.io/github/license/ned-kelly/docker-lechacal-homeassistant.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/gtricot/ha-lechacal-mqtt.png) ![buildx](https://github.com/gtricot/docker-lechacal-homeassistant/workflows/buildx/badge.svg)
+![License](https://img.shields.io/github/license/ned-kelly/docker-lechacal-homeassistant.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/gtricot/lechacal-mqtt.png) ![buildx](https://github.com/gtricot/docker-lechacal-homeassistant/workflows/buildx/badge.svg)
 
 ----
 
@@ -43,10 +43,10 @@ Run the official Docker image (i386, amd64, armv6, armv7, arm64).
 
 ### Run
 ```
-docker run -d --name ha-lechacal-mqtt       \
+docker run -d --name lechacal-mqtt       \
     --device=/dev/ttyAMA0:/dev/ttyAMA0      \ # add serial port device from host
     - e MQTT_URL=mqtt://my_mqtt_broker:1883 \ # set mqtt broker url
-    gtricot/ha-lechacal-mqtt
+    gtricot/lechacal-mqtt
 ```
 
 ### Configure
