@@ -67,7 +67,7 @@ Configuration uses environment variables.
 
 _**Note:**_
 
-  - builds on docker hub are currently for `linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386` -- If you have issues standing up the image on your Linux distribution (i.e. An old Pi/ARM device) you may need to manually build the image to support your local device architecture - This can be done by uncommenting the build flag in your docker-compose.yml file.
+  - builds on docker hub are currently for `linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64` -- If you have issues standing up the image on your Linux distribution (i.e. An old Pi/ARM device) you may need to manually build the image to support your local device architecture - This can be done by uncommenting the build flag in your docker-compose.yml file.
 
 ## Integrating into Home Assistant.
 
