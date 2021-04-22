@@ -1,7 +1,6 @@
 FROM node:12-alpine
 
 ADD src/ /opt/lechacal
-ADD config/ /opt/lechacal/
 
 RUN apk add --no-cache --virtual \
     .gyp \
