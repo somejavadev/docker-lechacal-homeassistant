@@ -1,39 +1,53 @@
 const SerialPort = require('serialport');
-const config = require('config-yml');
+const {baudRate, irmsMAoffset, mqttUrl, serial, deviceMapping, discoveryPrefix, identifier, mqttUser, mqttPassword} = require('./config');
 const mqtt = require('mqtt');
+const log = require('./log');
 
-const Readline = SerialPort.parsers.Readline;
-const parser = new Readline();
+// MQTT Connection
+const mqttOptions = {};
+if (mqttUser) {
+    mqttOptions.username = mqttUser;
+}
+if (mqttPassword) {
+    mqttOptions.password = mqttPassword;
+}
+log.info(`Connecting to MQTT broker [${mqttUrl}]...`);
+log.debug(`MQTT options [${JSON.stringify(mqttOptions)}]`);
+const mqttClient  = mqtt.connect(mqttUrl, mqttOptions);
+mqttClient.on("connect",function(){	
+    log.info(`Connected to MQTT broker [${mqttUrl}]`);
+});
 
-const port = new SerialPort(config.serialPort || '/dev/ttyAMA0', {
-    baudRate: config.baudRate || 38400,
+// Device mapping loading
+log.info(`Loading device mapping [${deviceMapping}]...`);
+const deviceMappingJson = require(`./device-mapping/${deviceMapping}`);
+log.info(`Loaded device mapping [${deviceMapping}]`);
+log.debug(`Device mapping contents [${JSON.stringify(deviceMappingJson)}]`);
+
+// Serial port opening
+const serialPort = new SerialPort(serial, {
+    baudRate: baudRate,
     autoOpen: false
-})
-
-var IrmsMAoffset = config.IrmsMAoffset || -240;
-var receivedSerialData = false;
-
-console.log("Establishing MQTT connection...");
-var mqttClient  = mqtt.connect(`mqtt://${config.mqttServer || '0.0.0.0'}:${config.mqttPort || 1883}`)
-
-const responseJsonTemplate = require(`./config/device-mapping/${config.deviceMapping || 'RPICT7V1.json'}`);
-
-// ------------------------------------------------------------
-
-console.log("Connecting to serial port...");
-port.open(function (err) {
+});
+log.info(`Opening serial port [${serial}]...`);
+serialPort.open(function (err) {
     if (err) {
-        return console.log('Error opening port: ', err.message);
-        process.exit(key, unit_of_measurement, icon);
+        log.error(`Error opening serial port [${serial}] : `, err.message);
+        process.exit(1);
     }
-})
+});
+log.info(`Opened serial port [${serial}]`);
 
+// HA sensors creation
 mqttClient.on('connect', function () {
-    console.log("Creating HA Sensors...");
+    log.info("Creating HA Sensors...");
     createHASensors();
 })
 
-port.pipe(parser);
+// Serial port data processing
+const parser = new SerialPort.parsers.Readline({ delimiter: '\n' });
+serialPort.pipe(parser);
+var receivedSerialData = false;
 parser.on('data', function (data) {
 
     // Example of values: http://lechacal.com/wiki/index.php?title=RPICT7V1_v2.0
@@ -45,27 +59,30 @@ parser.on('data', function (data) {
     var count = 0;
 
     // Read sensor mapping from JSON file.
-    Object.keys(responseJsonTemplate).forEach(function(key) {
+    Object.keys(deviceMappingJson).forEach(function(key) {
         try {
             pushHASensorData(key, parseDataFromTemplateParams(values[count], key))
         } catch(e) {
-            console.error(e);
+            log.error(e);
         }
         count++;
     });
 
-    if(!receivedSerialData) console.log("Received data from sensor, and posted to MQTT... Program is up and running!"); receivedSerialData = true;
+    if(!receivedSerialData) {
+        log.info("Received data from sensor, and posted to MQTT... Program is up and running!"); 
+        receivedSerialData = true;
+    }
 
 });
 
 function parseDataFromTemplateParams(data, configItem) {
     var returnValue;
-    switch(responseJsonTemplate[configItem].type) {
+    switch(deviceMappingJson[configItem].type) {
       case "float":
-        returnValue = parseFloat(data) + IrmsMAoffset;
+        returnValue = parseFloat(data) + irmsMAoffset;
         break;
       case "integer":
-        returnValue = parseInt(data) + IrmsMAoffset;
+        returnValue = parseInt(data);
         break;
       case "string":
         returnValue = data;
@@ -75,7 +92,7 @@ function parseDataFromTemplateParams(data, configItem) {
     }
 
     // If there's options to 'transform' the value/number (ie divide, multiply etc - apply these calculations...)
-    var transformMath = (responseJsonTemplate[configItem].convertMath === undefined) ? false : responseJsonTemplate[configItem].convertMath;
+    var transformMath = (deviceMappingJson[configItem].convertMath === undefined) ? false : deviceMappingJson[configItem].convertMath;
     if(transformMath) {
         return eval(`${returnValue} ${transformMath}`);
     } else {
@@ -85,11 +102,11 @@ function parseDataFromTemplateParams(data, configItem) {
 
 function createHASensor(name, unit_of_measurement, icon) {
     mqttClient.publish(
-        `${config.mqttTopic || 'homeassistant'}/sensor/${config.mqttDevicename || 'lechacal'}_${name}/config`,
+        `${discoveryPrefix}/sensor/${identifier}_${name}/config`,
         `{
             "name": "${name}",
             "unit_of_measurement": "${unit_of_measurement}",
-            "state_topic": "${config.mqttTopic || 'homeassistant'}/sensor/${config.mqttDevicename || 'lechacal'}_${name}",
+            "state_topic": "${discoveryPrefix}/sensor/${identifier}_${name}",
             "icon": "mdi:${icon}"
         }`
     );
@@ -97,14 +114,14 @@ function createHASensor(name, unit_of_measurement, icon) {
 
 function pushHASensorData(name, data) {
     mqttClient.publish(
-        `${config.mqttTopic || 'homeassistant'}/sensor/${config.mqttDevicename || 'lechacal'}_${name}`, `${data}`
+        `${discoveryPrefix}/sensor/${identifier}_${name}`, `${data}`
     );
 }
 
 function createHASensors() {
     // Logic to Auto-create HA device...
-    Object.keys(responseJsonTemplate).forEach(function(key) {
-        createHASensor(key, responseJsonTemplate[key].unit_of_measurement, responseJsonTemplate[key].icon)
+    Object.keys(deviceMappingJson).forEach(function(key) {
+        createHASensor(key, deviceMappingJson[key].unit_of_measurement, deviceMappingJson[key].icon)
     });
 }
 
