@@ -1,5 +1,5 @@
 const SerialPort = require('serialport');
-const {baudRate, irmsMAoffset, mqttUrl, serial, deviceMapping, discoveryPrefix, identifier, mqttUser, mqttPassword} = require('./config');
+const {baudRate, mqttUrl, serial, deviceMapping, discoveryPrefix, identifier, mqttUser, mqttPassword} = require('./config');
 const mqtt = require('mqtt');
 const log = require('./log');
 
@@ -79,7 +79,7 @@ function parseDataFromTemplateParams(data, configItem) {
     var returnValue;
     switch(deviceMappingJson[configItem].type) {
       case "float":
-        returnValue = parseFloat(data) + irmsMAoffset;
+        returnValue = parseFloat(data);
         break;
       case "integer":
         returnValue = parseInt(data);

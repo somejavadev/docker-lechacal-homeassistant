@@ -3,7 +3,6 @@ module.exports = {
     serial: process.env.SERIAL || '/dev/ttyAMA0',
     baudRate: parseInt(process.env.BAUD_RATE) || 38400,
     deviceMapping: process.env.DEVICE_MAPPING || 'RPICT7V1.json',
-    irmsMAoffset: parseInt(process.env.IRMS_MA_OFFSET) || -240,
     mqttUrl: process.env.MQTT_URL || 'mqtt://localhost:1883',
     mqttUser: process.env.MQTT_USER,
     mqttPassword: process.env.MQTT_PASSWORD,

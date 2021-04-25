@@ -58,7 +58,6 @@ Configuration uses environment variables.
 |SERIAL           | Serial Port location                                                   | /dev/ttyAMA0           |
 |BAUD_RATE        | Serial Port Baud Rate                                                  | 38400                  |
 |DEVICE_MAPPING   | Lechacal Device mapping file                                           | RPICT7V1.json          |
-|IRMS_MA_OFFSET   | Offset applied to Irms measures                                        | -240                   |
 |MQTT_URL         | MQTT Broker connection URL                                             | mqtt://localhost:1883  |
 |MQTT_USER        | MQTT user     (optional)                                               |                        |
 |MQTT_PASSWORD    | MQTT password (optional)                                               |                        |
