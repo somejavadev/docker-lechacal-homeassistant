@@ -107,7 +107,10 @@ function createHASensor(name, unit_of_measurement, icon) {
             "unit_of_measurement": "${unit_of_measurement}",
             "state_topic": "${discoveryPrefix}/sensor/${identifier}_${name}",
             "icon": "mdi:${icon}"
-        }`
+        }`, 
+        {
+            retain: true,
+        }
     );
 }
 
@@ -119,9 +122,6 @@ function pushHASensorData(name, data) {
 
 function createHASensors() {
     log.debug(`Creating HA sensors...`);
-
-    // Re-create HA sensors every 5 minutes (if HA is restarted etc)...
-    setTimeout(createHASensors, 1000 * 60 * 5);
 
     // Logic to Auto-create HA device...
     Object.keys(deviceMappingJson).forEach(function(key) {
