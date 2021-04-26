@@ -16,7 +16,7 @@ log.info(`Connecting to MQTT broker [${mqttUrl}]...`);
 log.debug(`MQTT options [${JSON.stringify(mqttOptions)}]`);
 const mqttClient  = mqtt.connect(mqttUrl, mqttOptions);
 
-// HA sensors creation
+// HA sensors initial creation
 mqttClient.on('connect', function () {
     log.info(`Connected to MQTT broker [${mqttUrl}].`);
     createHASensors();
@@ -73,8 +73,6 @@ parser.on('data', function (data) {
 
 });
 
-// Re-create HA sensors every 5 minutes (if HA is restarted etc)...
-setTimeout(createHASensors, 1000 * 60 * 5); 
 
 function parseDataFromTemplateParams(data, configItem) {
     var returnValue;
@@ -95,7 +93,7 @@ function parseDataFromTemplateParams(data, configItem) {
     // If there's options to 'transform' the value/number (ie divide, multiply etc - apply these calculations...)
     var transformMath = (deviceMappingJson[configItem].convertMath === undefined) ? false : deviceMappingJson[configItem].convertMath;
     if(transformMath) {
-        return eval(`${returnValue} ${transformMath}`);
+        return Number(eval(`${returnValue} ${transformMath}`).toFixed(fractionDigits));
     } else {
         return returnValue;
     }
@@ -121,6 +119,10 @@ function pushHASensorData(name, data) {
 
 function createHASensors() {
     log.debug(`Creating HA sensors...`);
+
+    // Re-create HA sensors every 5 minutes (if HA is restarted etc)...
+    setTimeout(createHASensors, 1000 * 60 * 5);
+
     // Logic to Auto-create HA device...
     Object.keys(deviceMappingJson).forEach(function(key) {
         createHASensor(key, deviceMappingJson[key].unit_of_measurement, deviceMappingJson[key].icon)
