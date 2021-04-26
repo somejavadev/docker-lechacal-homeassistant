@@ -1,4 +1,5 @@
 const SerialPort = require('serialport');
+const Readline = require('@serialport/parser-readline')
 const {baudRate, mqttUrl, serial, deviceMapping, discoveryPrefix, identifier, mqttUser, mqttPassword} = require('./config');
 const mqtt = require('mqtt');
 const log = require('./log');
@@ -14,9 +15,13 @@ if (mqttPassword) {
 log.info(`Connecting to MQTT broker [${mqttUrl}]...`);
 log.debug(`MQTT options [${JSON.stringify(mqttOptions)}]`);
 const mqttClient  = mqtt.connect(mqttUrl, mqttOptions);
-mqttClient.on("connect",function(){	
-    log.info(`Connected to MQTT broker [${mqttUrl}]`);
-});
+
+// HA sensors creation
+mqttClient.on('connect', function () {
+    log.info(`Connected to MQTT broker [${mqttUrl}]. Creating HA sensors...`);
+    log.info("Creating HA Sensors...");
+    createHASensors();
+})
 
 // Device mapping loading
 log.info(`Loading device mapping [${deviceMapping}]...`);
@@ -38,14 +43,8 @@ serialPort.open(function (err) {
 });
 log.info(`Opened serial port [${serial}]`);
 
-// HA sensors creation
-mqttClient.on('connect', function () {
-    log.info("Creating HA Sensors...");
-    createHASensors();
-})
-
 // Serial port data processing
-const parser = new SerialPort.parsers.Readline({ delimiter: '\n' });
+const parser = new Readline({ delimiter: '\n' });
 serialPort.pipe(parser);
 var receivedSerialData = false;
 parser.on('data', function (data) {
@@ -74,6 +73,9 @@ parser.on('data', function (data) {
     }
 
 });
+
+// Re-create HA sensors every 5 minutes (if HA is restarted etc)...
+setTimeout(createHASensors, 1000 * 60 * 5); 
 
 function parseDataFromTemplateParams(data, configItem) {
     var returnValue;
@@ -124,5 +126,3 @@ function createHASensors() {
         createHASensor(key, deviceMappingJson[key].unit_of_measurement, deviceMappingJson[key].icon)
     });
 }
-
-setTimeout(createHASensors, 1000 * 60 * 5); // Re-create HA sensors every 5 minutes (if HA is restarted etc)...
