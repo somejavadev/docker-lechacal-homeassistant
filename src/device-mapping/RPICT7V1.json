@@ -2,42 +2,42 @@
     "NodeID": {
         "type": "integer",
         "unit_of_measurement": "",
-        "icon": ""
+        "icon": "identifier"
     },
     "RP1": {
         "type": "float",
         "unit_of_measurement": "W",
-        "icon": ""
+        "icon": "flash"
     },
     "RP2": {
         "type": "float",
         "unit_of_measurement": "W",
-        "icon": ""
+        "icon": "flash"
     },
     "RP3": {
         "type": "float",
         "unit_of_measurement": "W",
-        "icon": ""
+        "icon": "flash"
     },
     "RP4": {
         "type": "float",
         "unit_of_measurement": "W",
-        "icon": ""
+        "icon": "flash"
     },
     "RP5": {
         "type": "float",
         "unit_of_measurement": "W",
-        "icon": ""
+        "icon": "flash"
     },
     "RP6": {
         "type": "float",
         "unit_of_measurement": "W",
-        "icon": ""
+        "icon": "flash"
     },
     "RP7": {
         "type": "float",
         "unit_of_measurement": "W",
-        "icon": ""
+        "icon": "flash"
     },
     "Irms1": {
         "type": "float",
@@ -84,6 +84,6 @@
     "Vrms": {
         "type": "float",
         "unit_of_measurement": "V",
-        "icon": ""
+        "icon": "sine-wave"
     }
 }

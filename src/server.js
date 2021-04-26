@@ -1,6 +1,6 @@
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline')
-const {baudRate, mqttUrl, serial, deviceMapping, discoveryPrefix, identifier, mqttUser, mqttPassword} = require('./config');
+const {baudRate, fractionDigits, mqttUrl, serial, deviceMapping, discoveryPrefix, identifier, mqttUser, mqttPassword} = require('./config');
 const mqtt = require('mqtt');
 const log = require('./log');
 
@@ -18,8 +18,7 @@ const mqttClient  = mqtt.connect(mqttUrl, mqttOptions);
 
 // HA sensors creation
 mqttClient.on('connect', function () {
-    log.info(`Connected to MQTT broker [${mqttUrl}]. Creating HA sensors...`);
-    log.info("Creating HA Sensors...");
+    log.info(`Connected to MQTT broker [${mqttUrl}].`);
     createHASensors();
 })
 
@@ -81,7 +80,7 @@ function parseDataFromTemplateParams(data, configItem) {
     var returnValue;
     switch(deviceMappingJson[configItem].type) {
       case "float":
-        returnValue = parseFloat(data);
+        returnValue = Number(parseFloat(data).toFixed(fractionDigits));
         break;
       case "integer":
         returnValue = parseInt(data);
@@ -121,6 +120,7 @@ function pushHASensorData(name, data) {
 }
 
 function createHASensors() {
+    log.debug(`Creating HA sensors...`);
     // Logic to Auto-create HA device...
     Object.keys(deviceMappingJson).forEach(function(key) {
         createHASensor(key, deviceMappingJson[key].unit_of_measurement, deviceMappingJson[key].icon)
