@@ -52,18 +52,20 @@ docker run -d --name lechacal-mqtt       \
 ### Configure
 Configuration uses environment variables.
 
-| Env var         | Description                                                            | Default value          |
-|-----------------|------------------------------------------------------------------------|------------------------|
-|LOG_LEVEL        | Log level (INFO, DEBUG, ERROR)                                         | INFO                   |
-|SERIAL           | Serial Port location                                                   | /dev/ttyAMA0           |
-|BAUD_RATE        | Serial Port Baud Rate                                                  | 38400                  |
-|DEVICE_MAPPING   | Lechacal Device mapping file                                           | RPICT7V1.json          |
-|FRACTION_DIGITS  | Fraction digits used when rounding sensor values                       | 2                      |
-|MQTT_URL         | MQTT Broker connection URL                                             | mqtt://localhost:1883  |
-|MQTT_USER        | MQTT user     (optional)                                               |                        |
-|MQTT_PASSWORD    | MQTT password (optional)                                               |                        |
-|IDENTIFIER       | Identifier for Home-Assistant Discovery                                | lechacal               |
-|DISCOVERY_PREFIX | Topic prefix for Home-Assistant Discovery                              | homeassistant          |
+| Env var               | Description                                                            | Default value          |
+|-----------------------|------------------------------------------------------------------------|------------------------|
+|LOG_LEVEL              | Log level (INFO, DEBUG, ERROR)                                         | INFO                   |
+|SERIAL                 | Serial Port location                                                   | /dev/ttyAMA0           |
+|BAUD_RATE              | Serial Port Baud Rate                                                  | 38400                  |
+|DEVICE_MAPPING         | Lechacal Device mapping file                                           | RPICT7V1.json          |
+|FRACTION_DIGITS        | Fraction digits used when rounding sensor values                       | 2                      |
+|INVERT_NEGATIVE_VALUES | If true, negative values are inverted (no clamp invert needed)         | false                  |
+|SENSOR_VALUE_THRESHOLD | Sensor values inferior to threshold are set to 0 (noise reduction)     | 0                      |
+|MQTT_URL               | MQTT Broker connection URL                                             | mqtt://localhost:1883  |
+|MQTT_USER              | MQTT user     (optional)                                               |                        |
+|MQTT_PASSWORD          | MQTT password (optional)                                               |                        |
+|IDENTIFIER             | Identifier for Home-Assistant Discovery                                | lechacal               |
+|DISCOVERY_PREFIX       | Topic prefix for Home-Assistant Discovery                              | homeassistant          |
 
 _**Note:**_
 

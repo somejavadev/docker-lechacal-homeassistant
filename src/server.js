@@ -1,6 +1,6 @@
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline')
-const {baudRate, fractionDigits, mqttUrl, serial, deviceMapping, discoveryPrefix, identifier, mqttUser, mqttPassword} = require('./config');
+const {baudRate, fractionDigits, mqttUrl, serial, deviceMapping, discoveryPrefix, identifier, mqttUser, mqttPassword, invertNegativeValues, sensorValueThreshold} = require('./config');
 const mqtt = require('mqtt');
 const log = require('./log');
 
@@ -45,7 +45,7 @@ log.info(`Opened serial port [${serial}]`);
 // Serial port data processing
 const parser = new Readline({ delimiter: '\n' });
 serialPort.pipe(parser);
-var receivedSerialData = false;
+let receivedSerialData = false;
 parser.on('data', function (data) {
 
     // Example of values: http://lechacal.com/wiki/index.php?title=RPICT7V1_v2.0
@@ -53,8 +53,8 @@ parser.on('data', function (data) {
     //     11      0.0     0.0     0.0     -0.0    0.0     0.0     -0.0    202.1   208.6   235.3   207.2   223.4   3296.3  2310.8  0.9
 
     // Values from sensor are returned with space/tab between each value.
-    var values = data.split(/[ ,]+/);
-    var count = 0;
+    const values = data.split(/[ ,]+/);
+    let count = 0;
 
     // Read sensor mapping from JSON file.
     Object.keys(deviceMappingJson).forEach(function(key) {
@@ -75,7 +75,7 @@ parser.on('data', function (data) {
 
 
 function parseDataFromTemplateParams(data, configItem) {
-    var returnValue;
+    let returnValue;
     switch(deviceMappingJson[configItem].type) {
       case "float":
         returnValue = Number(parseFloat(data).toFixed(fractionDigits));
@@ -90,13 +90,19 @@ function parseDataFromTemplateParams(data, configItem) {
         returnValue = data;
     }
 
-    // If there's options to 'transform' the value/number (ie divide, multiply etc - apply these calculations...)
-    var transformMath = (deviceMappingJson[configItem].convertMath === undefined) ? false : deviceMappingJson[configItem].convertMath;
-    if(transformMath) {
-        return Number(eval(`${returnValue} ${transformMath}`).toFixed(fractionDigits));
-    } else {
-        return returnValue;
+    // Apply transformations on numeric values
+    if (!isNaN(returnValue)) {
+        // Invert negative value if parameterized
+        if (returnValue < 0 && invertNegativeValues) {
+            returnValue = -returnValue;
+        }
+        // Set value to 0 if inferior to threshold
+        if (returnValue < sensorValueThreshold) {
+            returnValue = 0;
+        }
     }
+
+    return returnValue;
 }
 
 function createHASensor(name, unit_of_measurement, icon) {

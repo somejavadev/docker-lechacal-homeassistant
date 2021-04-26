@@ -46,27 +46,23 @@
     },
     "Irms1": {
         "type": "float",
-        "unit_of_measurement": "A",
-        "icon": "current-ac",
-        "convertMath": "/ 1000"
+        "unit_of_measurement": "mA",
+        "icon": "current-ac"
     },
     "Irms2": {
         "type": "float",
-        "unit_of_measurement": "A",
-        "icon": "current-ac",
-        "convertMath": "/ 1000"
+        "unit_of_measurement": "mA",
+        "icon": "current-ac"
     },
     "Irms3": {
         "type": "float",
-        "unit_of_measurement": "A",
-        "icon": "current-ac",
-        "convertMath": "/ 1000"
+        "unit_of_measurement": "mA",
+        "icon": "current-ac"
     },
     "Irms4": {
         "type": "float",
-        "unit_of_measurement": "A",
-        "icon": "current-ac",
-        "convertMath": "/ 1000"
+        "unit_of_measurement": "mA",
+        "icon": "current-ac"
     },
     "PF1": {
         "type": "float",
