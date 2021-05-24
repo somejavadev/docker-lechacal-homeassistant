@@ -80,9 +80,17 @@ function parseDataFromTemplateParams(data, configItem) {
     switch(deviceMappingJson[configItem].type) {
       case "float":
         returnValue = parseFloat(data);
+        if (isNaN(returnValue)) {
+            log.warn(`Nan value detected for float type ${deviceMappingJson[configItem]} config item. Returning 0.0 instead...`);
+            returnValue = 0.0;
+        }
         break;
       case "integer":
         returnValue = parseInt(data);
+        if (isNaN(returnValue)) {
+            log.warn(`Nan value detected for integer type ${deviceMappingJson[configItem]} config item. Returning 0 instead...`);
+            returnValue = 0;
+        }
         break;
       case "string":
         returnValue = data;
