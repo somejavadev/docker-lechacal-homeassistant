@@ -2,13 +2,13 @@
 
 **Docker Hub:** [`gtricot/lechacal-mqtt:latest`](https://hub.docker.com/r/gtricot/lechacal-mqtt/)
 
-![License](https://img.shields.io/github/license/ned-kelly/docker-lechacal-homeassistant.svg) ![Docker Pulls](https://img.shields.io/docker/pulls/gtricot/lechacal-mqtt.png) ![buildx](https://github.com/gtricot/docker-lechacal-homeassistant/workflows/buildx/badge.svg)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) ![Docker Pulls](https://img.shields.io/docker/pulls/gtricot/lechacal-mqtt.png) ![buildx](https://github.com/gtricot/docker-lechacal-homeassistant/workflows/buildx/badge.svg)
 
 ----
 
 This project is a simple lightweight docker container, designed to read data from the LeChacal Energy Monitoring PCB's and then transmit data to a [Home Assistant](https://www.home-assistant.io/) server (via MQTT) as part of a wider energy monitoring solution...
 
-The program ** should ** support all LeChacal devices that communicate via Serial, however at the time of writing I only have a RPICT7V1_v2.0 to test it on.
+The program ** should ** support all LeChacal devices that communicate via Serial, however at the time of writing I only have a RPICT7V1_v3.0 to test it on.
 
 Lastly, the use of a CT Clamp's to monitor energy consumption on your individual circuits, is a great addition to a fully featured smart home, and the [Voltronic HA Solar Monitor](https://github.com/ned-kelly/docker-voltronic-homeassistant) (if you are running this also).
 
@@ -24,7 +24,7 @@ The program is designed to be run in a Docker Container, and can be deployed on 
 - RPICT7V1_v2.0 - 7 CT 1 AC Voltage.
 - RPICT8 - 8 CT
 
-Note, if your device is not listed here you can create a json mapping file - Please look at the examples in the `config/device-mapping` directory.
+Note, if your device is not listed here you can create a json mapping file - Please look at the examples in the `src/device-mapping` directory.
 
 ## Prerequisites
 
@@ -39,7 +39,7 @@ uart_enable=yes
 And disable the Serial Console output using the `raspi-config` tool.
 
 ## Usage
-Run the official Docker image (i386, amd64, armv6, armv7, arm64).
+Run the official Docker image (amd64, armv6, armv7, arm64).
 
 ### Run
 ```
@@ -52,17 +52,20 @@ docker run -d --name lechacal-mqtt       \
 ### Configure
 Configuration uses environment variables.
 
-| Env var         | Description                                                            | Default value          |
-|-----------------|------------------------------------------------------------------------|------------------------|
-|LOG_LEVEL        | Log level (INFO, DEBUG, ERROR)                                         | INFO                   |
-|SERIAL           | Serial Port location                                                   | /dev/ttyAMA0           |
-|BAUD_RATE        | Serial Port Baud Rate                                                  | 38400                  |
-|DEVICE_MAPPING   | Lechacal Device mapping file                                           | RPICT7V1.json          |
-|MQTT_URL         | MQTT Broker connection URL                                             | mqtt://localhost:1883  |
-|MQTT_USER        | MQTT user     (optional)                                               |                        |
-|MQTT_PASSWORD    | MQTT password (optional)                                               |                        |
-|IDENTIFIER       | Identifier for Home-Assistant Discovery                                | lechacal               |
-|DISCOVERY_PREFIX | Topic prefix for Home-Assistant Discovery                              | homeassistant          |
+| Env var               | Description                                                            | Default value          |
+|-----------------------|------------------------------------------------------------------------|------------------------|
+|LOG_LEVEL              | Log level (INFO, DEBUG, ERROR)                                         | INFO                   |
+|SERIAL                 | Serial Port location                                                   | /dev/ttyAMA0           |
+|BAUD_RATE              | Serial Port Baud Rate                                                  | 38400                  |
+|DEVICE_MAPPING         | Lechacal Device mapping file                                           | RPICT7V1.json          |
+|FRACTION_DIGITS        | Fraction digits used when rounding sensor values                       | 2                      |
+|INVERT_NEGATIVE_VALUES | If true, negative values are inverted (no clamp invert needed)         | false                  |
+|SENSOR_VALUE_THRESHOLD | Sensor values inferior to threshold are set to 0 (noise reduction)     | 0                      |
+|MQTT_URL               | MQTT Broker connection URL                                             | mqtt://localhost:1883  |
+|MQTT_USER              | MQTT user     (optional)                                               |                        |
+|MQTT_PASSWORD          | MQTT password (optional)                                               |                        |
+|IDENTIFIER             | Identifier for Home-Assistant Discovery                                | lechacal               |
+|DISCOVERY_PREFIX       | Topic prefix for Home-Assistant Discovery                              | homeassistant          |
 
 _**Note:**_
 

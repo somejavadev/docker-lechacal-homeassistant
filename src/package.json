@@ -12,8 +12,8 @@
   "dependencies": {
     "bunyan": "^1.8.15",
     "config-yml": "^0.10.3",
-    "forever": "^3.0.2",
-    "mqtt": "^4.2.0",
-    "serialport": "^9.0.1"
+    "forever": "^3.0.4",
+    "mqtt": "^4.2.6",
+    "serialport": "^9.0.7"
   }
 }
