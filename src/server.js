@@ -76,20 +76,57 @@ parser.on('data', function (data) {
 
 function parseDataFromTemplateParams(data, configItem) {
     let returnValue;
-    switch(deviceMappingJson[configItem].type) {
+    const valueType = deviceMappingJson[configItem].type;
+    log.debug(`Parsing value ${data} with type ${valueType} for config item ${configItem}`);
+    switch(valueType) {
+
       case "float":
+
+        // Parse value
         returnValue = Number(parseFloat(data).toFixed(fractionDigits));
+        log.debug(`Parsed float value ${returnValue} for config item ${configItem} with ${fractionDigits} fraction digits`);
+
+        // Check for NaN value
         if (isNaN(returnValue)) {
-            log.warn(`Nan value detected for float type ${deviceMappingJson[configItem]} config item. Returning 0.0 instead...`);
+            log.warn(`Nan value detected for float type ${configItem} config item. Original value : ${data}. Returning 0.0 instead`);
             returnValue = 0.0;
         }
+
+        // Invert negative value if parameterized
+        if (returnValue < 0 && invertNegativeValues) {
+            log.debug(`Inverting negative return value ${returnValue} for config item ${configItem}`);
+            returnValue = -returnValue;
+        }
+        // Set value to 0.0 if inferior to threshold
+        if (returnValue < sensorValueThreshold) {
+            log.debug(`Return value ${returnValue} inferior to threshold ${sensorValueThreshold} for config item ${configItem}. Returning 0.0 instead`);
+            returnValue = 0.0;
+        }
+        
         break;
+
       case "integer":
+
+        // Parse value
         returnValue = parseInt(data);
+
+        // Check for NaN value
         if (isNaN(returnValue)) {
-            log.warn(`Nan value detected for integer type ${deviceMappingJson[configItem]} config item. Returning 0 instead...`);
+            log.warn(`Nan value detected for integer type ${configItem} config item. Original value : ${data}. Returning 0 instead`);
             returnValue = 0;
         }
+
+        // Invert negative value if parameterized
+        if (returnValue < 0 && invertNegativeValues) {
+            log.debug(`Inverting negative return value ${returnValue} for config item ${configItem}`);
+            returnValue = -returnValue;
+        }
+        // Set value to 0 if inferior to threshold
+        if (returnValue < sensorValueThreshold) {
+            log.debug(`Return value ${returnValue} inferior to threshold ${sensorValueThreshold} for config item ${configItem}. Returning 0 instead`);
+            returnValue = 0;
+        }
+
         break;
       case "string":
         returnValue = data;
@@ -98,18 +135,7 @@ function parseDataFromTemplateParams(data, configItem) {
         returnValue = data;
     }
 
-    // Apply transformations on numeric values
-    if (!isNaN(returnValue)) {
-        // Invert negative value if parameterized
-        if (returnValue < 0 && invertNegativeValues) {
-            returnValue = -returnValue;
-        }
-        // Set value to 0 if inferior to threshold
-        if (returnValue < sensorValueThreshold) {
-            returnValue = 0;
-        }
-    }
-
+    log.debug(`Parsed value ${returnValue} from raw value ${data} with type ${valueType} for config item ${configItem}`);
     return returnValue;
 }
 
