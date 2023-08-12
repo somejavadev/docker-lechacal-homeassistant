@@ -1,77 +1,80 @@
 {
-    "Realpower1": {
+    "ct1.Realpower": {
         "type": "float",
         "unit_of_measurement": "W",
         "icon": "flash"
     },
-    "ApparentPower1": {
+    "ct1.ApparentPower": {
         "type": "float",
         "unit_of_measurement": "W",
         "icon": "flash"
     },
-    "Irms1": {
+    "ct1.Irms": {
         "type": "float",
         "unit_of_measurement": "mA",
         "icon": "current-ac"
     },
-    "Vrms1": {
+    "ct1.Vrms": {
         "type": "float",
         "unit_of_measurement": "V",
         "icon": "sine-wave"
     },
-    "PowerFactor1": {
+    "ct1.PowerFactor": {
         "type": "float",
         "unit_of_measurement": ".",
         "icon": "sine-wave"
     },
-    "Realpower2": {
+
+    "ct2.Realpower": {
         "type": "float",
         "unit_of_measurement": "W",
         "icon": "flash"
     },
-    "ApparentPower2": {
+    "ct2.ApparentPower": {
         "type": "float",
         "unit_of_measurement": "W",
         "icon": "flash"
     },
-    "Irms2": {
+    "ct2.Irms": {
         "type": "float",
         "unit_of_measurement": "mA",
         "icon": "current-ac"
     },
-    "Vrms2": {
+    "ct2.Vrms": {
         "type": "float",
         "unit_of_measurement": "V",
         "icon": "sine-wave"
     },
-    "PowerFactor2": {
+    "ct2.PowerFactor": {
         "type": "float",
         "unit_of_measurement": ".",
         "icon": "sine-wave"
     },
-    "Realpower3": {
+
+    "ct3.Realpower": {
         "type": "float",
         "unit_of_measurement": "W",
         "icon": "flash"
     },
-    "ApparentPower3": {
+    "ct3.ApparentPower": {
         "type": "float",
         "unit_of_measurement": "W",
         "icon": "flash"
     },
-    "Irms3": {
+    "ct3.Irms": {
         "type": "float",
         "unit_of_measurement": "mA",
         "icon": "current-ac"
     },
-    "Vrms3": {
+    "ct3.Vrms": {
         "type": "float",
         "unit_of_measurement": "V",
         "icon": "sine-wave"
     },
-    "PowerFactor3": {
+    "ct3.PowerFactor": {
         "type": "float",
         "unit_of_measurement": ".",
         "icon": "sine-wave"
     }
+
 }

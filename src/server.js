@@ -141,15 +141,43 @@ function parseDataFromTemplateParams(data, configItem) {
     return returnValue;
 }
 
+
+function sensorName(name) {
+    var result = {
+        "parent": name,
+        "child": "",
+        "containsChild": false,
+        "path": name,
+        "name": name,
+        "uniqueId": name
+    }
+
+    if(name != undefined && name.includes(".")) {
+        var split = name.split(".");
+        result.parent = split[0];
+        result.child = split[1];
+        result.containsChild = true;
+        result.path = `${split[0]}/${split[1]}`;
+        result.name = split[1]
+        result.uniqueId = `${split[0]}_${split[1]}`
+    }
+
+    return result;
+}
+
 function createHASensor(name, unit_of_measurement, icon) {
+
+    var sName = sensorName(name);
+    queue =  `${discoveryPrefix}/sensor/${identifier}_${sName.path}/config`
+
     mqttClient.publish(
-        `${discoveryPrefix}/sensor/${identifier}_${name}/config`,
+        queue,
         `{
-            "name": "${name}",
+            "name": "${sName.name}",
             "unit_of_measurement": "${unit_of_measurement}",
-            "state_topic": "${discoveryPrefix}/sensor/${identifier}_${name}",
+            "state_topic": "${discoveryPrefix}/sensor/${identifier}_${sName.path}",
             "icon": "mdi:${icon}",
-            "unique_id": "${identifier}_${name}",
+            "unique_id": "${identifier}_${sName.uniqueId}",
             "device": {
                 "name": "LeChacal Energy Monitor",
                 "identifiers": ["LeChacal", "Energy", "Monitor"],
@@ -171,8 +199,9 @@ function createHASensor(name, unit_of_measurement, icon) {
 }
 
 function pushHASensorData(name, data) {
+    var sName = sensorName(name);
     mqttClient.publish(
-        `${discoveryPrefix}/sensor/${identifier}_${name}`, `${data}`
+        `${discoveryPrefix}/sensor/${identifier}_${sName.path}`, `${data}`
     );
 }
 
