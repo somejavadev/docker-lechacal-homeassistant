@@ -1,4 +1,9 @@
 {
+    "NodeID": {
+        "type": "integer",
+        "unit_of_measurement": "",
+        "icon": "identifier"
+    },
     "ct1.Realpower": {
         "type": "float",
         "unit_of_measurement": "W",
