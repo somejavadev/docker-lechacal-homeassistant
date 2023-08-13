@@ -76,3 +76,35 @@ _**Note:**_
 Providing you have setup [MQTT](https://www.home-assistant.io/components/mqtt/) with Home Assistant, the device will automatically register in your Home Assistant when the container starts for the first time -- You do not need to manually define any sensors.
 
 From here you can setup [Graphs](https://www.home-assistant.io/lovelace/history-graph/) and regular text value sensors to display sensor data.
+
+## Running as a service
+
+### Install docker
+
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+usermod -aG docker $USER
+```
+
+### Install docker-compose
+
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+
+### Folder structure and config
+
+```bash
+mkdir -p /opt/ha-lechacal-mqtt
+cp linux/docker-compose.yml /opt/ha-lechacal-mqtt
+nano /opt/ha-lechacal-mqtt/docker-compose.yml # update the required environment settings.
+```
+
+### Enable systemd
+
+```bash
+cp linux/ha-lechacal-mqtt.service /etc/systemd/system/
+systemctl enable ha-lechacal-mqtt
+systemctl start ha-lechacal-mqtt
+```

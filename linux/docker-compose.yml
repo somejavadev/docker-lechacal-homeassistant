@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  lechacal-mqtt:
+    image: ha-lechacal-mqtt
+    container_name: lechacal-mqtt
+    privileged: true
+    restart: always
+    environment:
+      - LOG_LEVEL=INFO
+      - SERIAL=/dev/ttyAMA0
+      - BAUD_RATE=38400
+      - DEVICE_MAPPING=RPICT3V1_sketch_v2_0_up.json
+      - FRACTION_DIGITS=2
+      - INVERT_NEGATIVE_VALUES=false
+      - SENSOR_VALUE_THRESHOLD=0
+      - MQTT_URL=mqtt://127.0.0.1:1883
+      - MQTT_USER=
+      - MQTT_PASSWORD=
+      - MQTT_REPORT_INTERVAL=5000
+      - IDENTIFIER=house-power-v2
+      - DISCOVERY_PREFIX=homeassistant
+    devices:
+      - /dev/ttyAMA0:/dev/ttyAMA0
